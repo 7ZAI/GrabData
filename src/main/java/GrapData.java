@@ -1,18 +1,14 @@
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import scrawler.StringUtils;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
  * @author:binblink
@@ -23,80 +19,79 @@ import java.util.regex.Pattern;
  **/
 public class GrapData {
 
-//    static HashSet<String> hashSet = new HashSet<String>();
-//
-//    static String[] SELECT_STRING = {"tr.provincetr", "tr.citytr", "tr.countytr", "tr.towntr"};
-//
-//
-//    static String baseurl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2017";
-//
-//    static int baseTemp = appearNumber(baseurl, "/");
-//
-//    public static void getData(String url) {
-//
-//
-//        try {
-//            Document doc = Jsoup.connect(url).get();
-//            doc.charset();
-//
-//            int m = appearNumber(url, "/") - baseTemp;
-//
-//            if (m >= 4) {
-//                return;
-//            }
-//
-//            Elements eles = doc.select(SELECT_STRING[m]);
-//
-//            Elements es = eles.select("a");
-//
-//            String newurl = "";
-//
-//            if(m==0){
-//                for(Element ele: es){
-//                    newurl = ele.attr("abs:href");
-//
-//                    System.out.println(ele.attr("abs:href").replaceAll("<br>","") + "-----" +  ele.html().replaceAll("<br>",""));
-//
-////                    getData(newurl);
-//                }
-//
-//            }else{
-//                System.out.println(es.get(0).html().replaceAll("<br>","") + "-----" + es.get(1).html().replaceAll("<br>",""));
-//                newurl = es.get(0).attr("abs.href");
-////                getData(newurl);
-//
-//            }
+    static HashSet<String> hashSet = new HashSet<String>();
+
+    static String[] SELECT_STRING = {"tr.provincetr", "tr.citytr", "tr.countytr", "tr.towntr"};
 
 
+    static String baseurl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2017";
 
-//            getData(es.get(0).attr("abs.href"));
+    static int baseTemp = StringUtils.appearNumber(baseurl, "/");
 
-//            for (Element ele : es) {
-//                String newurl = ele.attr("abs:href");
-//                if (hashSet.contains(newurl)) {
-//
-//
-//                    System.out.println(ele.html().replaceAll("<br>", ""));
-//                    continue;
-//                }
-//                hashSet.add(ele.attr("abs:href"));
-//                System.out.println(newurl + "  " + ele.html().replaceAll("<br>", ""));
-//
-//            }
+    public static void getData(String url) {
 
 
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+        try {
+            Document doc = Jsoup.connect(url).get();
+            System.out.println(doc.baseUri());
+
+            int m = StringUtils.appearNumber(url, "/") - baseTemp;
+
+            if (m > 3) {
+                return;
+            }
+
+            Elements eles = doc.select(SELECT_STRING[m]);
+
+            Elements es = eles.select("a");
+
+            String newurl = "";
+
+            if(m==0){
+                for(Element ele: es){
+                    newurl = ele.attr("abs:href");
+                    System.out.println(newurl);
+                    System.out.println(ele.attr("abs:href").replaceAll("<br>","") + "-----" +  ele.html().replaceAll("<br>",""));
+
+                    getData(newurl);
+                }
+
+            }else{
+
+
+                System.out.println(es.get(0).html().replaceAll("<br>","") + "-----" + es.get(1).html().replaceAll("<br>",""));
+                newurl = es.get(0).attr("abs.href");
+
+                for (Element ele : es) {
+                    newurl = ele.attr("abs:href");
+                    if (hashSet.contains(newurl)) {
+
+
+                        System.out.println(ele.html().replaceAll("<br>", ""));
+                        continue;
+                    }
+                    hashSet.add(ele.attr("abs:href"));
+                    System.out.println(newurl + "  " + ele.html().replaceAll("<br>", ""));
+
+                }
+
+                getData(newurl);
+
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 
     public static void main(String[] args) {
 
 
-//        getData(baseurl);
+        getData(baseurl);
 
 //        HttpClient httpClient = new HttpClient();
 //

@@ -9,8 +9,8 @@
         <module name="chengrapdata" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="chengrapdata" target="1.6" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="chengrapdata" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

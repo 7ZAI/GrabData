@@ -22,16 +22,6 @@ public class Address {
         return pid;
     }
 
-    @Override
-    public String toString() {
-        return "Address{" +
-                "id='" + id + '\'' +
-                ", pid='" + pid + '\'' +
-                ", areacode='" + areacode + '\'' +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
     public void setPid(String pid) {
         this.pid = pid;
     }
@@ -58,5 +48,15 @@ public class Address {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id='" + id + '\'' +
+                ", pid='" + pid + '\'' +
+                ", areacode='" + areacode + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

@@ -21,10 +21,15 @@ public class Links {
     public synchronized void addUrl(String url) {
 
         list.add(url);
+//        System.out.println(url);
         if(list.size()>0){
             this.notifyAll();
         }
 
+    }
+
+    public synchronized int getSize(){
+        return list.size();
     }
 
     public synchronized String getUrl(){

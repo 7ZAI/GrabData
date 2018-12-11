@@ -60,12 +60,12 @@ public class StringUtils {
     public static Document getDocument(String url) {
 
         HttpClient httpClient = new HttpClient();
-        httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+        httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(15000);
         GetMethod getMethod = new GetMethod(url);
         Document document = null;
 
         // 设置 get 请求超时 5s
-        getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
+        getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 15000);
         // 设置请求重试处理
         getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
         // 3.执行 HTTP GET 请求
@@ -85,6 +85,7 @@ public class StringUtils {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (HttpException e) {
+            System.out.println(url+" 连接超时！");
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();

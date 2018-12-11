@@ -1,8 +1,9 @@
 package scrawler;
 
-import java.util.LinkedList;
-import java.util.UUID;
-import java.util.concurrent.ThreadPoolExecutor;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import java.util.concurrent.*;
 
 /**
  * @author:binblink
@@ -15,33 +16,64 @@ public class Test {
 
     public static void main(String[] args) {
 
-        String baseurl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2017";
 
-        LinkedList<String> list = new LinkedList<String>();
-        list.add(baseurl);
-
-        Links links = new Links(list);
-
-        final LinkedList<Address> addrlist = new LinkedList<Address>();
-
-        AreaScrawler areaScrawler =  new AreaScrawler(links,addrlist);
+//
+//        LinkedList<String> list = new LinkedList<String>();
+//        list.add(baseurl);
+//
+//        Links links = new Links(list);
+//
+//        final LinkedList<Address> addrlist = new LinkedList<Address>();
+//
+//        AreaScrawler areaScrawler =  new AreaScrawler(links,addrlist);
 
 //        ThreadPool ThreadPoolExecutor
 
-        Thread t1 = new Thread(areaScrawler);
+//        ExecutorService executorService  = Executors.newFixedThreadPool(3);
+//        Future future = executorService.submit(areaScrawler);
+
+        String firsturl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2017/index.html";
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("demo-pool-%d").build();
+
+        ExecutorService threadPool = new ThreadPoolExecutor(8, 16,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+        LinkedBlockingQueue<Address> link = new LinkedBlockingQueue<Address>(2000);
+
+//        threadPool.execute(()-> System.out.println(Thread.currentThread().getName()));
+//        threadPool.shutdown();
+//        threadPool.submit(()-> System.out.println(Thread.currentThread().getName()+"dasdasdasd"));
+
+        ScanFirstPage firstPage = new ScanFirstPage(firsturl,threadPool,link);
+        threadPool.submit(firstPage);
 
 
-        t1.start();
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        for(Address addr : areaScrawler.getAddrList()){
-            System.out.println(addr);
-        }
+
+
+
+
+
+//        Thread t1 = new Thread(areaScrawler);
+//        Thread t2 = new Thread(areaScrawler);
+//        Thread t3 = new Thread(areaScrawler);
+//
+//
+//        t1.start();
+//        t2.start();
+//        t3.start();
+//
+//        try {
+//            t1.join();
+//            t2.join();
+//            t3.join();
+//
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println("地址数量：" + addrlist.size());
 
 
     }
