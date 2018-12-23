@@ -6,8 +6,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author:binblink
@@ -21,14 +21,14 @@ public class ScanPage implements Runnable {
     private String url;
     private int keyIndex;
     private String parentId;
-    private ExecutorService executorService;
+    private ThreadPoolExecutor threadPoolExecutor;
     private static final String[] SELECT_KEY = {"tr.citytr", "tr.countytr", "tr.towntr"};
     private LinkedBlockingQueue<Address> links;
 
-    public ScanPage(String url, int keyIndex, ExecutorService executorService, String parentId, LinkedBlockingQueue<Address> links) {
+    public ScanPage(String url, int keyIndex, ThreadPoolExecutor threadPoolExecutor, String parentId, LinkedBlockingQueue<Address> links) {
         this.url = url;
         this.keyIndex = keyIndex;
-        this.executorService = executorService;
+        this.threadPoolExecutor = threadPoolExecutor;
         this.parentId = parentId;
         this.links = links;
     }
@@ -41,14 +41,14 @@ public class ScanPage implements Runnable {
 
             document = Jsoup.connect(url).timeout(5000).get();
         } catch (IOException e) {
-            System.out.println(url + "连接超时！ 重新加入list");
-            executorService.submit(this);
+            System.out.println(url + "连接超时！ 重新加入任务");
+            threadPoolExecutor.submit(this);
             return;
         }
         Elements elements = document.select(SELECT_KEY[keyIndex]);
-        if (elements.size() <= 0) {
-            return;
-        }
+//        if (elements.size() <= 0) {
+//            return;
+//        }
         for (Element ele : elements) {
             Address address = new Address();
             Elements aeles = ele.select("a");
@@ -63,13 +63,18 @@ public class ScanPage implements Runnable {
             address.setName(aeles.get(1).html().replaceAll("<br>", ""));
             String newurl = aeles.get(0).attr("abs:href");
 //            System.out.println(newurl);
-            System.out.println(Thread.currentThread().getName()+"---------正在执行！" + address.toString());
+
             if (keyIndex < 2) {
                 //到了街道层 不用再添加新的url
-                executorService.submit(new ScanPage(newurl,keyIndex+1,executorService,uuid,links));
+                threadPoolExecutor.submit(new ScanPage(newurl,keyIndex+1, threadPoolExecutor,uuid,links));
             }
+//            System.out.println(Thread.currentThread().getName()+"---------正在执行！ 队列中任务数量为：" + threadPoolExecutor.getQueue().size());
             try {
                 links.put(address);
+//                synchronized (links){
+//                    System.out.println(Thread.currentThread5().getName()+"---------正在执行！" + address.toString()+"当前个数----"+links.size());
+//                }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

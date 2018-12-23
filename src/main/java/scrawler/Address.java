@@ -9,17 +9,34 @@ package scrawler;
  **/
 public class Address {
 
-    //id
+    /**
+     * id
+     */
     private String id;
-    //父id
-    private String pid ;
-    //地区代码
+    /**
+     * 父id
+     */
+    private String pid;
+    /**
+     * 地区代码
+     */
     private String areacode = "DEFAULT";
-    //名称
+    /**
+     * 名称
+     */
     private String name;
 
-    public String getPid() {
-        return pid;
+
+    public void setAreacode(String areacode) {
+        this.areacode = areacode;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setPid(String pid) {
@@ -30,25 +47,15 @@ public class Address {
         return areacode;
     }
 
-    public void setAreacode(String areacode) {
-        this.areacode = areacode;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public String getPid() { return pid; }
 
     @Override
     public String toString() {

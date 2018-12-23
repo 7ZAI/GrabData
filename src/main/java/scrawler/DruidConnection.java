@@ -9,38 +9,29 @@ import java.util.Properties;
 
 /**
  * @author:binblink
- * @Description
+ * @Description 单例模式获取dataSource
  * @Date: Create on  2018/12/11 23:19
  * @Modified By:
  * @Version:1.0.0
  **/
  public final class DruidConnection {
 
-    private static DruidDataSource dataSource ;
+    private static DruidDataSource dataSource = null ;
 
     private DruidConnection(){
 
     }
 
-    //该代码只执行一次保证dataSource的一致
-    static{
-        Properties properties = new Properties();
-        dataSource = new DruidDataSource();
-        try {
-            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("database.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        dataSource.configFromPropety(properties);
-    }
-
     public static Connection getConnection() throws IOException, SQLException {
         if(dataSource == null){
-            Properties properties = new Properties();
-            dataSource = new DruidDataSource();
-            dataSource.configFromPropety(properties);
-            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("database.properties"));
-
+            synchronized (DruidConnection.class){
+                if(dataSource == null){
+                    dataSource = new DruidDataSource();
+                    dataSource.setUrl("jdbc:mysql://localhost:3306/scrawler?characterEncoding=utf8&serverTimezone=UTC&useUnicode=true&useSSL=false");
+                    dataSource.setUsername("root");
+                    dataSource.setPassword("94816qibin");
+                }
+            }
         }
         return dataSource.getConnection();
     }

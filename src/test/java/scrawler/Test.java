@@ -33,22 +33,19 @@ public class Test {
 //        Future future = executorService.submit(areaScrawler);
 
         String firsturl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2017/index.html";
-        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("demo-pool-%d").build();
-
-        ExecutorService threadPool = new ThreadPoolExecutor(8, 16,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
-        LinkedBlockingQueue<Address> link = new LinkedBlockingQueue<Address>(2000);
-
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("scan-pool-%d").build();
+        //经测试数据量为46596
+        ThreadPoolExecutor threadPool = new ThreadPoolExecutor(8, 16,
+                10L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(50000), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+        LinkedBlockingQueue<Address> links = new LinkedBlockingQueue<Address>(50000);
 //        threadPool.execute(()-> System.out.println(Thread.currentThread().getName()));
 //        threadPool.shutdown();
 //        threadPool.submit(()-> System.out.println(Thread.currentThread().getName()+"dasdasdasd"));
 
-        ScanFirstPage firstPage = new ScanFirstPage(firsturl,threadPool,link);
+        ScanFirstPage firstPage = new ScanFirstPage(firsturl, threadPool, links);
         threadPool.submit(firstPage);
-
-
-
+//        threadPool.getCompletedTaskCount();
 
 
 
