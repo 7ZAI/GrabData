@@ -29,7 +29,7 @@ import java.util.Properties;
                     dataSource = new DruidDataSource();
                     dataSource.setUrl("jdbc:mysql://localhost:3306/scrawler?characterEncoding=utf8&serverTimezone=UTC&useUnicode=true&useSSL=false");
                     dataSource.setUsername("root");
-                    dataSource.setPassword("94816qibin");
+                    dataSource.setPassword("123456");
                 }
             }
         }
